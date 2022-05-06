@@ -10,15 +10,16 @@
  * per l’invocazione della funzione.
  * */
 
-#include <stdio.h>
-#include <stdlib.h>
+#include "stdio.h"
+#include "stdlib.h"
+
 typedef struct nodo {
     int el;
     struct nodo *next;
 }Nodo;
 Nodo *head = NULL;
 
-void *inserisciL(int val);
+void inserisciL(Nodo *);
 int somma();
 Nodo *allocal();
 void stampa();
@@ -29,43 +30,56 @@ int main(){
     int j=0, num=0;
     printf("Inserisci il numero di nodi da creare\n");
     scanf("%d",&num);
-    printf("inserisci i valori:\n");
+    printf("===== creazione della lista ====\n");
     head = allocal();
     head->next = NULL;
+    head->el = -1;
     for(int i=0; i<num; i++){
-        scanf("%d", &j);//non si ferma :( ...cioè se metto di seguito anche la inserisciL(...) contiua ad inserire valori.
-        inserisciL(j);
+        Nodo *tmp = allocal();
+        printf("Inserisci valore\n");
+        scanf("%d", &tmp->el);
+        tmp->next = NULL;
+        inserisciL(tmp);
     }
     stampa();
-
-
-
-
-/*   //questi appartengono alla versione "originale"
-    int somma= valori(arr, num);
-    printf("somma = %d", somma);
-    */
 
     return 0;
 }
 
-//ma se io devo dargli un massimo di nodi da creare cosa faccio?
-void *inserisciL(int val){
-    Nodo *testa = head;
-    while (testa->next != NULL){
-        testa = testa->next;//scorre la lista e va al nodo successivo
+void inserisciL(Nodo *da_inserire){
+    if(head->next == NULL){
+        head->next = da_inserire;
+    }else{
+        Nodo *ptr = head;
+        while(ptr->next != NULL){
+           ptr = ptr->next; 
+        }
+        if(ptr->next == NULL) //ho trovato il nodo dove inserire
+            ptr->next = da_inserire;
     }
-    testa->el = val;
-    testa->next = NULL;
+
 }
 
 
 void stampa(){
-    Nodo *testa= head;
-    while (testa->next != NULL){
-        printf("elemento -> %d\n", testa->el);
-        testa = testa->next;
-    }
+    printf("======= printing list ======\n");
+    if(head == NULL)
+        return;
+    else{
+        if(head->next != NULL){
+            Nodo *ptr = head->next;
+            size_t pos = 0;
+            while(ptr != NULL){
+                printf("(%zu, %d)\n", pos, ptr->el);
+                pos++;
+                ptr = ptr->next;
+            }    
+        }else{
+            size_t pos = 0;
+            printf("(%zu, %d)", pos, head->el);
+        }
+    }    
+   
 }
 /*scorre la lista e trovo il minimo e il massimo, restituisce la somma dei due
  * come faccio a passagli la lista?
@@ -90,7 +104,7 @@ int somma(){
 
 
 Nodo *allocal(){
-    return (Nodo *)malloc(sizeof(Nodo));
+    return (struct nodo *)malloc(sizeof(struct nodo));
 }
 
 /* //versione originale
